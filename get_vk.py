@@ -1,0 +1,31 @@
+import settings
+from vk_api import VkApi
+from vk_api.bot_longpoll import VkBotLongPoll
+from vk_api.utils import get_random_id
+import json
+
+session = VkApi(token=settings.token)
+session_api = session.get_api()
+
+
+def Bot_longpoll():
+    return VkBotLongPoll(session, settings.group_id, wait=60)
+
+
+def send_msg(id_type, id, msg_to_user, keyboard=None, attachment=None):
+    session.method('messages.send',
+                   {id_type: id, 'message': msg_to_user,
+                    'random_id': get_random_id(),
+                    'keyboard': str(json.dumps(keyboard))})
+
+
+def new_user(user_id):
+    get_conversations = session.method(
+        'messages.getConversationsById',
+        {'peer_ids': user_id, 'group_id': int(settings.group_id)}
+        )
+    number_of_messages = get_conversations["items"][0]["last_message_id"]
+    if number_of_messages > 1:
+        return False
+    else:
+        return True

@@ -1,5 +1,7 @@
 settings.py
 logs.log
+notes.txt
+messages.txt
 
 
 # Byte-compiled / optimized / DLL files
@@ -131,3 +133,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#VS Code stuff
+.vscode/

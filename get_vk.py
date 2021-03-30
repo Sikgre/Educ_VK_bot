@@ -2,10 +2,13 @@ import settings
 from vk_api import VkApi
 from vk_api.bot_longpoll import VkBotLongPoll
 from vk_api.utils import get_random_id
-import json
 
 session = VkApi(token=settings.token)
 session_api = session.get_api()
+
+'''
+Здесь перечислены все функции, использующие методы API ВК
+'''
 
 
 def Bot_longpoll():
@@ -16,7 +19,7 @@ def send_msg(id_type, id, msg_to_user, keyboard=None, attachment=None):
     session.method('messages.send',
                    {id_type: id, 'message': msg_to_user,
                     'random_id': get_random_id(),
-                    'keyboard': str(json.dumps(keyboard))})
+                    'keyboard': keyboard})
 
 
 def new_user(user_id):

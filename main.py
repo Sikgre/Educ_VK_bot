@@ -1,0 +1,34 @@
+import get_vk
+from vk_api.bot_longpoll import VkBotEventType
+import logging_rules
+import messages
+import db_functions
+
+
+longpoll = get_vk.Bot_longpoll()
+
+
+'''
+Цикл прослушивания сообщений с сервера ВК и их обработки.
+При получении нового сообщения запускается функция ответа,
+определённая в messages.py
+'''
+
+while True:
+    try:
+        for event in longpoll.listen():
+            if event.type == VkBotEventType.MESSAGE_NEW:
+                message_from_user = event.obj.text
+                user = get_vk.get_user(event.obj.from_id)
+                user_name = user[0]['first_name'] + ' ' + user[0]['last_name']
+                db_functions.add_user(event.obj.from_id, user_name)
+                logging_rules.write_incoming(message_from_user,
+                                             event.obj.from_id)
+                if event.from_user:
+                    messages.answer_to_user(message_from_user,
+                                            event.obj.from_id)
+    except (KeyboardInterrupt, SystemExit):
+        raise
+    except Exception:
+        logging_rules.write_log_exception("Catched an exception")
+        raise

@@ -1,5 +1,6 @@
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 import handlers
+from handlers import keyboard_command as button
 
 '''
 Функция для упрощённого указания цвета кнопок
@@ -32,7 +33,6 @@ def keyboard_start():
 
 
 def keyboard_begin():
-    button = handlers.keyboard_command
     create_keyboard = VkKeyboard(one_time=True)
     create_keyboard.add_button(button["document"], color=colors("red"))
     create_keyboard.add_button(button["consulting"], color=colors("white"))
@@ -43,7 +43,6 @@ def keyboard_begin():
 
 
 def keyboard_back():
-    button = handlers.keyboard_command
     create_keyboard = VkKeyboard(one_time=True)
     create_keyboard.add_button(button["back"], color=colors("blue"))
     create_keyboard = create_keyboard.get_keyboard()
@@ -51,7 +50,6 @@ def keyboard_back():
 
 
 def keyboard_about():
-    button = handlers.keyboard_command
     create_keyboard = VkKeyboard(one_time=True)
     create_keyboard.add_button(button["project"], color=colors("red"))
     create_keyboard.add_button(button["conditions"], color=colors("white"))
@@ -64,7 +62,6 @@ def keyboard_about():
 
 
 def keyboard_document():
-    button = handlers.keyboard_command
     create_keyboard = VkKeyboard(one_time=True)
     create_keyboard.add_button(button["contract_type"], color=colors("red"))
     create_keyboard.add_button(button["trust_type"], color=colors("white"))
@@ -78,7 +75,6 @@ def keyboard_document():
 
 
 def keyboard_consulting():
-    button = handlers.keyboard_command
     create_keyboard = VkKeyboard(one_time=True)
     create_keyboard.add_button(button["labor_law"], color=colors("red"))
     create_keyboard.add_button(button["private_law"], color=colors("white"))
@@ -105,13 +101,13 @@ def keyboard_empty():
 '''
 
 keyboard_map = {
-    handlers.keyboard_command['start']: keyboard_start(),
-    handlers.keyboard_command['beginning']: keyboard_begin(),
-    handlers.keyboard_command['more']: keyboard_about(),
-    handlers.keyboard_command['document']: keyboard_document(),
-    handlers.keyboard_command['consulting']: keyboard_consulting()
+    handlers.keyboard_command['start']: keyboard_start,
+    handlers.keyboard_command['beginning']: keyboard_begin,
+    handlers.keyboard_command['more']: keyboard_about,
+    handlers.keyboard_command['document']: keyboard_document,
+    handlers.keyboard_command['consulting']: keyboard_consulting
 }
 
 
 def keyboard_choice(message_from_user):
-    return keyboard_map.get(message_from_user)
+    return keyboard_map.get(message_from_user, keyboard_empty)

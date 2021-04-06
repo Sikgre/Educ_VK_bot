@@ -1,3 +1,4 @@
+
 keyboard_command = {
     "start": "Старт",
     "beginning": "Начать",
@@ -18,7 +19,7 @@ keyboard_command = {
 }
 
 keyboard_answer = {
-    "beginning": "Выберите тип заказа или нажмите кнопку \"Дополнительная информация\", чтобы узнать больше",
+    "beginning": "Выберите тип заказа или нажмите кнопку \"Узнать о проекте\", чтобы узнать больше",
     "document": "Выберите типы документов, которые вы хотите оформить",
     "consulting": "Выберите тематику вопроса, по которому вам необходима консультация",
     "more": "Вы можете узнать о проекте, об условиях работы или посмотреть отзывы о наших услугах",
@@ -96,19 +97,23 @@ def menu():
     return keyboard_answer["menu"]
 
 
-keyboard_functions = {
-    keyboard_command["beginning"]: beginning(),
-    keyboard_command["document"]: document(),
-    keyboard_command["consulting"]: consulting(),
-    keyboard_command["more"]: more(),
-    keyboard_command["project"]: project(),
-    keyboard_command["conditions"]: conditions(),
-    keyboard_command["refs"]: refs(),
-    keyboard_command["contract_type"]: contract_type(),
-    keyboard_command["trust_type"]: trust_type(),
-    keyboard_command["declaration_type"]: declaration_type(),
-    keyboard_command["labor_law"]: labor_law(),
-    keyboard_command["private_law"]: private_law(),
-    keyboard_command["other"]: other(),
-    keyboard_command["menu"]: menu()
+def error():
+    return error_messages["unknown_command"]
+
+
+answer = {
+    keyboard_command["beginning"]: beginning,
+    keyboard_command["document"]: document,
+    keyboard_command["consulting"]: consulting,
+    keyboard_command["more"]: more,
+    keyboard_command["project"]: project,
+    keyboard_command["conditions"]: conditions,
+    keyboard_command["refs"]: refs,
+    keyboard_command["contract_type"]: contract_type,
+    keyboard_command["trust_type"]: trust_type,
+    keyboard_command["declaration_type"]: declaration_type,
+    keyboard_command["labor_law"]: labor_law,
+    keyboard_command["private_law"]: private_law,
+    keyboard_command["other"]: other,
+    keyboard_command["menu"]: menu
 }

@@ -1,8 +1,8 @@
 import json
 import logging_rules
-import get_vk
-import handlers
-import keyboard
+from handlers import answer, error
+from keyboard import keyboard_choice
+from vk_functions import VKMethods
 
 '''
 Функция write_message планируется для осуществления записей текстов диалогов.
@@ -25,8 +25,7 @@ def write_message(obj):
 
 
 def answer_to_user(message_from_user, user=None, show_keyboard=None):
-    answer = handlers.keyboard_functions
-    show_keyboard = keyboard.keyboard_choice(message_from_user)
-    send_message = answer.get(message_from_user, 'Неизвестная команда')
-    logging_rules.write_outcoming(send_message, user)
-    return get_vk.send_msg('user_id', user, send_message, show_keyboard)
+    show_keyboard = keyboard_choice(message_from_user)
+    send_message = answer.get(message_from_user, error)
+    logging_rules.write_outcoming(send_message(), user)
+    VKMethods.send_msg('user_id', user, send_message(), show_keyboard())

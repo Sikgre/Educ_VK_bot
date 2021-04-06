@@ -1,11 +1,11 @@
-import get_vk
 from vk_api.bot_longpoll import VkBotEventType
 import logging_rules
 import messages
 import db_functions
+from vk_functions import VKMethods
 
 
-longpoll = get_vk.Bot_longpoll()
+longpoll = VKMethods.Bot_longpoll()
 
 
 '''
@@ -19,7 +19,7 @@ while True:
         for event in longpoll.listen():
             if event.type == VkBotEventType.MESSAGE_NEW:
                 message_from_user = event.obj.text
-                user = get_vk.get_user(event.obj.from_id)
+                user = VKMethods.get_user(event.obj.from_id)
                 user_name = user[0]['first_name'] + ' ' + user[0]['last_name']
                 db_functions.add_user(event.obj.from_id, user_name)
                 logging_rules.write_incoming(message_from_user,

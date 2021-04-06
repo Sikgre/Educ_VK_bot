@@ -3,20 +3,11 @@ from models import User
 
 
 def new_user(user_vk_id):
-    user = User.query.filter(User.user_vk_id == user_vk_id)
-    number = 0
-    for i in user:
-        number += 1
-    if number >= 1:
-        return False
-    else:
-        return True
+    return bool(User.query.filter(User.user_vk_id == user_vk_id).count())
 
 
 def add_user(user_vk_id, user_name):
     user = User(user_vk_id=user_vk_id, user_name=user_name)
-    if new_user(user_vk_id) is True:
+    if new_user(user_vk_id) is False:
         db_session.add(user)
         db_session.commit()
-    else:
-        pass

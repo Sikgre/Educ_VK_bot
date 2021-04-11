@@ -27,3 +27,7 @@ def write_outcoming(message, user):
 
 def write_log_exception(text):
     return logging.exception(text)
+
+
+def log_exception_text(text):
+    logging.info(text)

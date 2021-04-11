@@ -1,13 +1,81 @@
 from db import db_session
-from models import User
+from db_models import User, Order
+from logging_rules import log_exception_text
 
 
-def new_user(user_vk_id):
-    return bool(User.query.filter(User.user_vk_id == user_vk_id).count())
+def check_new_user(vk_id):
+    return bool(User.query.filter(User.vk_id == vk_id).count())
 
 
-def add_user(user_vk_id, user_name):
-    user = User(user_vk_id=user_vk_id, user_name=user_name)
-    if new_user(user_vk_id) is False:
+def add_user(vk_id, name):
+    user = User(vk_id=vk_id, name=name)
+    if check_new_user(vk_id) is False:
         db_session.add(user)
         db_session.commit()
+
+
+def get_user_id(vk_id):
+    user = User.query.filter(User.vk_id == vk_id).first()
+    return user.id
+
+
+def check_opened_orders(vk_id):
+    user_id = get_user_id(vk_id)
+    opened_orders = Order.query.filter(
+        Order.user_id == user_id,
+        Order.status == 'opened'
+        ).count()
+    return bool(opened_orders)
+
+
+def add_order_document(vk_id):
+    user_id = get_user_id(vk_id)
+    order = Order(status="opened", order_type="document", user_id=user_id,
+                  deadline="deadline", description="description")
+    db_session.add(order)
+    db_session.commit()
+
+
+def add_order_consulting(vk_id):
+    user_id = get_user_id(vk_id)
+    order = Order(status="opened", order_type="consulting", user_id=user_id,
+                  deadline="deadline", description="description")
+    db_session.add(order)
+    db_session.commit()
+
+
+def get_opened_order(vk_id):
+    try:
+        user_id = get_user_id(vk_id)
+        order = Order.query.filter(
+            Order.user_id == user_id,
+            Order.status == 'opened'
+            ).first()
+        return order.id
+    except AttributeError:
+        log_exception_text(
+            'Вызвана команда получения открытых заказов.'
+            'Открытых заказов не найдено')
+
+
+def cancel_order(vk_id):
+    order_id = get_opened_order(vk_id)
+    Order.query.filter(Order.id == order_id).update({
+        Order.status: "cancelled"}, synchronize_session=False)
+    db_session.commit()
+
+
+def update_order_document():
+    pass
+
+
+def update_order_consulting():
+    pass
+
+
+def check_order_step():
+    pass
+
+
+def finish_order():
+    pass

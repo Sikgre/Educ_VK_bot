@@ -1,6 +1,7 @@
 settings.py
 logs.log
 notes.txt
+docker-postgres/
 
 
 # Byte-compiled / optimized / DLL files

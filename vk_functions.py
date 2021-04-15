@@ -21,7 +21,7 @@ class VKMethods():
                  keyboard=None, attachment=None):
         cls.session.method('messages.send',
                            {id_type: id,
-                            'message': msg_to_user(),
+                            'message': msg_to_user,
                             'random_id': get_random_id(),
                             'keyboard': keyboard()
                             }

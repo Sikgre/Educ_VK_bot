@@ -8,12 +8,6 @@ keyboard_command = {
     "project": "Узнать о проекте",
     "conditions": "Условия работы",
     "refs": "Отзывы",
-    "contract_type": "Договор",
-    "trust_type": "Доверенность",
-    "declaration_type": "Декларация",
-    "labor_law": "Трудовое право",
-    "private_law": "Гражданское право",
-    "other": "Другое",
     "menu": "В главное меню",
     "cancel": "Отменить заказ"
 }
@@ -26,12 +20,6 @@ keyboard_answer = {
     "project": "Здесь должен быть текст о проекте",
     "conditions": "Здесь должен быть текст об условиях работы",
     "refs": "Здесь должен быть текст про отзывы",
-    "contract_type": "Приложите необходимые документы для оформления",
-    "trust_type": "Приложите необходимые документы для оформления",
-    "declaration_type": "Приложите необходимые документы для оформления",
-    "labor_law": "Вопрос по трудовому праву",
-    "private_law": "Вопрос по гражданскому праву",
-    "other": "Задайте свой вопрос",
     "menu": "В главное меню",
     "cancel": "Ваш заказ отменён."
 }
@@ -40,6 +28,21 @@ error_messages = {
     "unknown_command_start": "Для начала диалога нажмите или наберите \"Начать\" (без кавычек)",
     "unknown_command": "Извините, не знаю такой команды. Попробуйте ещё раз",
     "incorrect_command": "На данном шаге нельзя использовать эту команду."
+}
+
+steps = {
+    "document":
+        {
+            "type": "Сообщение о выборе типа документа",
+            "file_1": "Сообщение о выборе файла №1",
+            "file_2": "Сообщение о выборе файла №2"
+        },
+    "consulting":
+        {
+            "type": "Сообщение о выборе типа консультации",
+            "your_question": "Напишите свой вопрос"
+        },
+    "finish_order": "Ваш заказ принят. Ожидайте ответа администратора"
 }
 
 
@@ -71,30 +74,6 @@ def refs():
     return keyboard_answer["refs"]
 
 
-def contract_type():
-    return keyboard_answer["contract_type"]
-
-
-def trust_type():
-    return keyboard_answer["trust_type"]
-
-
-def declaration_type():
-    return keyboard_answer["declaration_type"]
-
-
-def labor_law():
-    return keyboard_answer["labor_law"]
-
-
-def private_law():
-    return keyboard_answer["private_law"]
-
-
-def other():
-    return keyboard_answer["other"]
-
-
 def menu():
     return keyboard_answer["menu"]
 
@@ -119,12 +98,51 @@ answer = {
     keyboard_command["project"]: project,
     keyboard_command["conditions"]: conditions,
     keyboard_command["refs"]: refs,
-    keyboard_command["contract_type"]: contract_type,
-    keyboard_command["trust_type"]: trust_type,
-    keyboard_command["declaration_type"]: declaration_type,
-    keyboard_command["labor_law"]: labor_law,
-    keyboard_command["private_law"]: private_law,
-    keyboard_command["other"]: other,
     keyboard_command["menu"]: menu,
     keyboard_command["cancel"]: order_cancel
 }
+
+
+#     "contract_type": "Договор",
+#     "trust_type": "Доверенность",
+#     "declaration_type": "Декларация",
+#     "labor_law": "Трудовое право",
+#     "private_law": "Гражданское право",
+#     "other": "Другое",
+
+#     "contract_type": "Приложите необходимые документы для оформления",
+#     "trust_type": "Приложите необходимые документы для оформления",
+#     "declaration_type": "Приложите необходимые документы для оформления",
+#     "labor_law": "Вопрос по трудовому праву",
+#     "private_law": "Вопрос по гражданскому праву",
+#     "other": "Задайте свой вопрос",
+
+#     def contract_type():
+#     return keyboard_answer["contract_type"]
+
+
+# def trust_type():
+#     return keyboard_answer["trust_type"]
+
+
+# def declaration_type():
+#     return keyboard_answer["declaration_type"]
+
+
+# def labor_law():
+#     return keyboard_answer["labor_law"]
+
+
+# def private_law():
+#     return keyboard_answer["private_law"]
+
+
+# def other():
+#     return keyboard_answer["other"]
+
+#     keyboard_command["contract_type"]: contract_type,
+#     keyboard_command["trust_type"]: trust_type,
+#     keyboard_command["declaration_type"]: declaration_type,
+#     keyboard_command["labor_law"]: labor_law,
+#     keyboard_command["private_law"]: private_law,
+#     keyboard_command["other"]: other,

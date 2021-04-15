@@ -30,16 +30,14 @@ def check_opened_orders(vk_id):
 
 def add_order_document(vk_id):
     user_id = get_user_id(vk_id)
-    order = Order(status="opened", order_type="document", user_id=user_id,
-                  deadline="deadline", description="description")
+    order = Order(status="opened", order_type="document", user_id=user_id)
     db_session.add(order)
     db_session.commit()
 
 
 def add_order_consulting(vk_id):
     user_id = get_user_id(vk_id)
-    order = Order(status="opened", order_type="consulting", user_id=user_id,
-                  deadline="deadline", description="description")
+    order = Order(status="opened", order_type="consulting", user_id=user_id)
     db_session.add(order)
     db_session.commit()
 
@@ -58,6 +56,12 @@ def get_opened_order(vk_id):
             'Открытых заказов не найдено')
 
 
+def get_order_type(vk_id):
+    order_id = get_opened_order(vk_id)
+    order = Order.query.filter(Order.id == order_id).first()
+    return order.order_type
+
+
 def cancel_order(vk_id):
     order_id = get_opened_order(vk_id)
     Order.query.filter(Order.id == order_id).update({
@@ -65,17 +69,28 @@ def cancel_order(vk_id):
     db_session.commit()
 
 
-def update_order_document():
-    pass
+def check_empty_description(vk_id):
+    order_id = get_opened_order(vk_id)
+    if order_id is not None:
+        order = Order.query.filter(Order.id == order_id).first()
+        return bool(order.description)
 
 
-def update_order_consulting():
-    pass
+def add_order_description(vk_id, description):
+    order_id = get_opened_order(vk_id)
+    Order.query.filter(Order.id == order_id).update({
+        Order.description: description}, synchronize_session=False)
+    db_session.commit()
 
 
-def check_order_step():
-    pass
+def get_order_description(vk_id):
+    order_id = get_opened_order(vk_id)
+    order = Order.query.filter(Order.id == order_id).first()
+    return order.description
 
 
-def finish_order():
-    pass
+def finish_order(vk_id):
+    order_id = get_opened_order(vk_id)
+    Order.query.filter(Order.id == order_id).update({
+        Order.status: "finished"}, synchronize_session=False)
+    db_session.commit()

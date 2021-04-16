@@ -39,7 +39,7 @@ class Order(Base):
 
     def __repr__(self):
         return
-        f'<Order: {self.id}, type: {self.type_id}, '
+        f'<Order: {self.id}, type: {self.order_type}>'
 
 
 if __name__ == "__main__":

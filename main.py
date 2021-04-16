@@ -25,7 +25,7 @@ while True:
                     user_name = user[0]['first_name'] + ' ' + user[0]['last_name']
                     db_functions.add_user(event.obj.from_id, user_name)
                     logging_rules.write_incoming(message_from_user,
-                                                event.obj.from_id)
+                                                 event.obj.from_id)
                     messages.answer_to_user(message_from_user,
                                             event.obj.from_id)
     except (KeyboardInterrupt, SystemExit):

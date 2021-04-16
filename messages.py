@@ -1,10 +1,9 @@
 import json
 import logging_rules
-from handlers import answer, error, keyboard_command, incorrect_command, steps
+from handlers import answer, keyboard_command, steps
 from keyboard import keyboard_choice, keyboard_empty
 from vk_functions import VKMethods
 import db_functions
-import types
 
 
 def check_keyboard_command(message_from_user):
@@ -36,9 +35,9 @@ def cancel_order(message_from_user, user):
 def command_before_order(message_from_user, user):
     if check_create_order(message_from_user) is True:
         start_new_order(message_from_user, user)
-        return answer.get(message_from_user, error)
+        return answer.get(message_from_user, answer["unknown_command"])
     else:
-        return answer.get(message_from_user, error)
+        return answer.get(message_from_user, answer["unknown_command"])
 
 
 def command_order_process(message_from_user, user):
@@ -47,7 +46,7 @@ def command_order_process(message_from_user, user):
             cancel_order(message_from_user, user)
             return answer.get(message_from_user)
         else:
-            return incorrect_command
+            return answer.get("incorrect_command")
     else:
         return order_processing(message_from_user, user)
 
@@ -83,7 +82,7 @@ def order_processing(message_from_user, user):
         db_functions.add_order_description(user, final_parameters)
         return message_to_user
     else:
-        parameters = json.loads(json.loads(db_functions.get_order_description(user)))
+        parameters = json.loads(db_functions.get_order_description(user))
         if bool(list(parameters.values()).count(None)) is True:
             order_type = db_functions.get_order_type(user)
             for i in parameters:
@@ -101,11 +100,7 @@ def order_processing(message_from_user, user):
 
 
 def answer_to_user(message_from_user, user=None, show_keyboard=None):
-    message = send_message_choice(message_from_user, user)
-    if isinstance(message, types.FunctionType) is True:
-        send_message = message()
-    else:
-        send_message = message
+    send_message = send_message_choice(message_from_user, user)
     try:
         show_keyboard = keyboard_choice(send_message)
     except TypeError:

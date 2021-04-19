@@ -27,7 +27,7 @@ def colors(col):
 
 def keyboard_start():
     create_keyboard = VkKeyboard(one_time=True)
-    create_keyboard.add_button('Начать', color=colors("red"))
+    create_keyboard.add_button('Начать', color=colors("blue"))
     create_keyboard = create_keyboard.get_keyboard()
     return create_keyboard
 
@@ -52,30 +52,6 @@ def keyboard_about():
     return create_keyboard
 
 
-def keyboard_document():
-    create_keyboard = VkKeyboard(one_time=True)
-    create_keyboard.add_button(button["contract_type"], color=colors("blue"))
-    create_keyboard.add_button(button["trust_type"], color=colors("white"))
-    create_keyboard.add_line()
-    create_keyboard.add_button(button["declaration_type"], color=colors("green"))
-    create_keyboard.add_line()
-    create_keyboard.add_button(button["cancel"], color=colors("red"))
-    create_keyboard = create_keyboard.get_keyboard()
-    return create_keyboard
-
-
-def keyboard_consulting():
-    create_keyboard = VkKeyboard(one_time=True)
-    create_keyboard.add_button(button["labor_law"], color=colors("blue"))
-    create_keyboard.add_button(button["private_law"], color=colors("white"))
-    create_keyboard.add_line()
-    create_keyboard.add_button(button["other"], color=colors("green"))
-    create_keyboard.add_line()
-    create_keyboard.add_button(button["cancel"], color=colors("red"))
-    create_keyboard = create_keyboard.get_keyboard()
-    return create_keyboard
-
-
 def keyboard_empty():
     create_keyboard = VkKeyboard(one_time=True)
     create_keyboard = create_keyboard.get_empty_keyboard()
@@ -89,13 +65,11 @@ def keyboard_empty():
 '''
 
 keyboard_map = {
-    handlers.keyboard_command['start']: keyboard_start,
-    handlers.keyboard_command['beginning']: keyboard_begin,
-    handlers.keyboard_command['more']: keyboard_about,
-    handlers.keyboard_command['document']: keyboard_document,
-    handlers.keyboard_command['consulting']: keyboard_consulting
+    handlers.keyboard_answer['cancel']: keyboard_start,
+    handlers.keyboard_answer['beginning']: keyboard_begin,
+    handlers.keyboard_answer['more']: keyboard_about,
 }
 
 
-def keyboard_choice(message_from_user):
-    return keyboard_map.get(message_from_user, keyboard_empty)
+def keyboard_choice(send_message):
+    return keyboard_map.get(send_message, keyboard_empty)

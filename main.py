@@ -1,7 +1,7 @@
 from vk_api.bot_longpoll import VkBotEventType
 import logging_rules
-import messages
-import db_functions
+from handlers import MessageHandler
+from db_functions import Upsert_DB
 import requests
 from vk_functions import VKMethods
 
@@ -23,11 +23,11 @@ while True:
                     message_from_user = event.obj.text
                     user = VKMethods.get_user(event.obj.from_id)
                     user_name = user[0]['first_name'] + ' ' + user[0]['last_name']
-                    db_functions.add_user(event.obj.from_id, user_name)
+                    Upsert_DB.add_user(event.obj.from_id, user_name)
                     logging_rules.write_incoming(message_from_user,
                                                  event.obj.from_id)
-                    messages.answer_to_user(message_from_user,
-                                            event.obj.from_id)
+                    MessageHandler.answer_to_user(message_from_user,
+                                                  event.obj.from_id)
     except (KeyboardInterrupt, SystemExit):
         raise
     except requests.exceptions.ReadTimeout:

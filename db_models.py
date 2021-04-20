@@ -28,7 +28,7 @@ class Order(Base):
     order_type = Column(Enum("document", "consulting", name="order_types"))
     user_id = Column(Integer, ForeignKey(User.id))
     description = Column(JSON)
-    deadline = Column(String)
+    comments = Column(String)
 
     user = relationship(User, backref="orders")
 

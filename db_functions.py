@@ -3,94 +3,116 @@ from db_models import User, Order
 from logging_rules import log_exception_text
 
 
-def check_new_user(vk_id):
-    return bool(User.query.filter(User.vk_id == vk_id).count())
+class check_DB():
 
+    @staticmethod
+    def check_new_user(vk_id):
+        return bool(User.query.filter(User.vk_id == vk_id).count())
 
-def add_user(vk_id, name):
-    user = User(vk_id=vk_id, name=name)
-    if check_new_user(vk_id) is False:
-        db_session.add(user)
-        db_session.commit()
-
-
-def get_user_id(vk_id):
-    user = User.query.filter(User.vk_id == vk_id).first()
-    return user.id
-
-
-def check_opened_orders(vk_id):
-    user_id = get_user_id(vk_id)
-    opened_orders = Order.query.filter(
-        Order.user_id == user_id,
-        Order.status == 'opened'
-        ).count()
-    return bool(opened_orders)
-
-
-def add_order_document(vk_id):
-    user_id = get_user_id(vk_id)
-    order = Order(status="opened", order_type="document", user_id=user_id)
-    db_session.add(order)
-    db_session.commit()
-
-
-def add_order_consulting(vk_id):
-    user_id = get_user_id(vk_id)
-    order = Order(status="opened", order_type="consulting", user_id=user_id)
-    db_session.add(order)
-    db_session.commit()
-
-
-def get_opened_order(vk_id):
-    try:
-        user_id = get_user_id(vk_id)
-        order = Order.query.filter(
+    @staticmethod
+    def check_opened_orders(vk_id):
+        user_id = get_DB.get_user_id(vk_id)
+        opened_orders = Order.query.filter(
             Order.user_id == user_id,
             Order.status == 'opened'
-            ).first()
-        return order.id
-    except AttributeError:
-        log_exception_text(
-            'Вызвана команда получения открытых заказов.'
-            'Открытых заказов не найдено')
+            ).count()
+        return bool(opened_orders)
 
+    @staticmethod
+    def check_empty_description(vk_id):
+        order_id = get_DB.get_opened_order(vk_id)
+        if order_id is not None:
+            order = Order.query.filter(Order.id == order_id).first()
+            return bool(order.description)
 
-def get_order_type(vk_id):
-    order_id = get_opened_order(vk_id)
-    order = Order.query.filter(Order.id == order_id).first()
-    return order.order_type
-
-
-def cancel_order(vk_id):
-    order_id = get_opened_order(vk_id)
-    Order.query.filter(Order.id == order_id).update({
-        Order.status: "cancelled"}, synchronize_session=False)
-    db_session.commit()
-
-
-def check_empty_description(vk_id):
-    order_id = get_opened_order(vk_id)
-    if order_id is not None:
+    @staticmethod
+    def check_order_comments(vk_id):
+        order_id = get_DB.get_opened_order(vk_id)
         order = Order.query.filter(Order.id == order_id).first()
-        return bool(order.description)
+        return bool(order.comments)
 
 
-def add_order_description(vk_id, description):
-    order_id = get_opened_order(vk_id)
-    Order.query.filter(Order.id == order_id).update({
-        Order.description: description}, synchronize_session=False)
-    db_session.commit()
+class get_DB():
+
+    @classmethod
+    def get_user_id(cls, vk_id):
+        user = User.query.filter(User.vk_id == vk_id).first()
+        return user.id
+
+    @classmethod
+    def get_opened_order(cls, vk_id):
+        try:
+            user_id = cls.get_user_id(vk_id)
+            order = Order.query.filter(
+                Order.user_id == user_id,
+                Order.status == 'opened'
+                ).first()
+            return order.id
+        except AttributeError:
+            log_exception_text(
+                'Вызвана команда получения открытых заказов.'
+                'Открытых заказов не найдено')
+
+    @classmethod
+    def get_order_type(cls, vk_id):
+        order_id = cls.get_opened_order(vk_id)
+        order = Order.query.filter(Order.id == order_id).first()
+        return order.order_type
+
+    @classmethod
+    def get_order_description(cls, vk_id):
+        order_id = cls.get_opened_order(vk_id)
+        order = Order.query.filter(Order.id == order_id).first()
+        return order.description
 
 
-def get_order_description(vk_id):
-    order_id = get_opened_order(vk_id)
-    order = Order.query.filter(Order.id == order_id).first()
-    return order.description
+class Upsert_DB():
 
+    @staticmethod
+    def add_user(vk_id, name):
+        user = User(vk_id=vk_id, name=name)
+        if check_DB.check_new_user(vk_id) is False:
+            db_session.add(user)
+            db_session.commit()
 
-def finish_order(vk_id):
-    order_id = get_opened_order(vk_id)
-    Order.query.filter(Order.id == order_id).update({
-        Order.status: "finished"}, synchronize_session=False)
-    db_session.commit()
+    @staticmethod
+    def add_order_document(vk_id):
+        user_id = get_DB.get_user_id(vk_id)
+        order = Order(status="opened", order_type="document", user_id=user_id)
+        db_session.add(order)
+        db_session.commit()
+
+    @staticmethod
+    def add_order_consulting(vk_id):
+        user_id = get_DB.get_user_id(vk_id)
+        order = Order(status="opened", order_type="consulting", user_id=user_id)
+        db_session.add(order)
+        db_session.commit()
+
+    @staticmethod
+    def add_order_description(vk_id, description):
+        order_id = get_DB.get_opened_order(vk_id)
+        Order.query.filter(Order.id == order_id).update({
+            Order.description: description}, synchronize_session=False)
+        db_session.commit()
+
+    @staticmethod
+    def add_order_comments(vk_id, comments):
+        order_id = get_DB.get_opened_order(vk_id)
+        Order.query.filter(Order.id == order_id).update({
+            Order.comments: comments}, synchronize_session=False)
+        db_session.commit()
+
+    @staticmethod
+    def cancel_order(vk_id):
+        order_id = get_DB.get_opened_order(vk_id)
+        Order.query.filter(Order.id == order_id).update({
+            Order.status: "cancelled"}, synchronize_session=False)
+        db_session.commit()
+
+    @staticmethod
+    def finish_order(vk_id):
+        order_id = get_DB.get_opened_order(vk_id)
+        Order.query.filter(Order.id == order_id).update({
+            Order.status: "closed"}, synchronize_session=False)
+        db_session.commit()

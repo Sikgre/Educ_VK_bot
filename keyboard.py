@@ -1,6 +1,6 @@
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
-import handlers
-from handlers import keyboard_command as button
+import messages
+from messages import keyboard_command as button
 
 '''
 Функция для упрощённого указания цвета кнопок
@@ -65,9 +65,9 @@ def keyboard_empty():
 '''
 
 keyboard_map = {
-    handlers.keyboard_answer['cancel']: keyboard_start,
-    handlers.keyboard_answer['beginning']: keyboard_begin,
-    handlers.keyboard_answer['more']: keyboard_about,
+    messages.keyboard_answer['cancel']: keyboard_start,
+    messages.keyboard_answer['beginning']: keyboard_begin,
+    messages.keyboard_answer['more']: keyboard_about,
 }
 
 

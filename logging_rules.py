@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 
 
-logging.basicConfig(filename="logs.log", level=logging.DEBUG)
+logging.basicConfig(filename="logs.log", level=logging.INFO)
 
 now = str(datetime.strftime(datetime.now(), "%d.%m %H:%M:%S"))
 

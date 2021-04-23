@@ -3,7 +3,9 @@ import logging_rules
 from messages import answer, keyboard_command, steps
 from keyboard import keyboard_choice, keyboard_empty
 from vk_functions import VKMethods
-from db_functions import check_DB, get_DB, Upsert_DB
+from db_functions import check_DB, get_DB, Upsert_DB, Bot_status
+from db_models import Order
+from settings import admin_id
 
 
 class CheckConditions():
@@ -110,7 +112,13 @@ class MessageHandler():
                 else:
                     message_to_user = steps["finish_order"]
                     Upsert_DB.finish_order(user)
-                    return message_to_user
+                    print("Закрыли заказ")
+                    if check_DB.check_correct_order(user) is True:
+                        Upsert_DB.sended_mark_on(user)
+                        print("Поставили отметку о закрытии")
+                        Bot_status.turn_off(user)
+                        cls.send_to_admin(user)
+                        return message_to_user
 
     @classmethod
     def answer_to_user(cls, message_from_user, user=None, show_keyboard=None):
@@ -121,3 +129,10 @@ class MessageHandler():
             show_keyboard = keyboard_empty
         logging_rules.write_outcoming(send_message, user)
         VKMethods.send_msg('user_id', user, send_message, show_keyboard)
+
+    @classmethod
+    def send_to_admin(cls, user):
+        order_id = get_DB.get_last_order(user)
+        order = Order.query.filter(Order.id == order_id).first()
+        description = order.description
+        VKMethods.send_msg('user_id', admin_id, description, keyboard_empty)

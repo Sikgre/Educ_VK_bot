@@ -31,6 +31,24 @@ class check_DB():
         order = Order.query.filter(Order.id == order_id).first()
         return bool(order.comments)
 
+    @staticmethod
+    def check_correct_order(vk_id):
+        order_id = get_DB.get_last_order(vk_id)
+        order = Order.query.filter(Order.id == order_id).first()
+        print("Проверка правильности заполнения заказа")
+        if ((order.comments is not None) and
+           (order.description is not None) and
+           (order.sended is False) and
+           order.status == "finished"):
+            print("True")
+            return True
+
+    @staticmethod
+    def check_bot_off(vk_id):
+        user_id = get_DB.get_user_id(vk_id)
+        user = User.query.filter(User.id == user_id).first()
+        return user.bot_off
+
 
 class get_DB():
 
@@ -64,6 +82,14 @@ class get_DB():
         order_id = cls.get_opened_order(vk_id)
         order = Order.query.filter(Order.id == order_id).first()
         return order.description
+
+    @classmethod
+    def get_last_order(cls, vk_id):
+        user_id = cls.get_user_id(vk_id)
+        order = Order.query.filter(
+            Order.user_id == user_id
+            ).order_by(Order.created_at.desc()).first()
+        return order.id
 
 
 class Upsert_DB():
@@ -114,5 +140,33 @@ class Upsert_DB():
     def finish_order(vk_id):
         order_id = get_DB.get_opened_order(vk_id)
         Order.query.filter(Order.id == order_id).update({
-            Order.status: "closed"}, synchronize_session=False)
+            Order.status: "finished"}, synchronize_session=False)
         db_session.commit()
+
+    @staticmethod
+    def sended_mark_on(vk_id):
+        order_id = get_DB.get_last_order(vk_id)
+        Order.query.filter(Order.id == order_id).update({
+            Order.sended: True}, synchronize_session=False)
+        db_session.commit()
+
+
+class Bot_status():
+
+    @staticmethod
+    def turn_off(vk_id):
+        order_id = get_DB.get_last_order(vk_id)
+        order = Order.query.filter(Order.id == order_id).first()
+        if order.status == 'finished' and order.sended is True:
+            user_id = get_DB.get_user_id(vk_id)
+            User.query.filter(User.id == user_id).update({
+                            User.bot_off: True}, synchronize_session=False)
+            db_session.commit()
+
+    @staticmethod
+    def turn_on(message_from_user, vk_id):
+        user_id = get_DB.get_user_id(vk_id)
+        if message_from_user == 'Включить бота':
+            User.query.filter(User.id == user_id).update({
+                            User.bot_off: False}, synchronize_session=False)
+            db_session.commit()

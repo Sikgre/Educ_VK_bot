@@ -1,19 +1,12 @@
 from vk_api.bot_longpoll import VkBotEventType
 import logging_rules
 from handlers import MessageHandler
-from db_functions import Upsert_DB
+from db_functions import Upsert_DB, check_DB, Bot_status
 import requests
 from vk_functions import VKMethods
 
 
 longpoll = VKMethods.Bot_longpoll()
-
-
-'''
-Цикл прослушивания сообщений с сервера ВК и их обработки.
-При получении нового сообщения запускается функция ответа,
-определённая в messages.py
-'''
 
 while True:
     try:
@@ -21,13 +14,20 @@ while True:
             if event.type == VkBotEventType.MESSAGE_NEW:
                 if event.from_user:
                     message_from_user = event.obj.text
-                    user = VKMethods.get_user(event.obj.from_id)
+                    vk_id = event.obj.from_id
+                    user = VKMethods.get_user(vk_id)
                     user_name = user[0]['first_name'] + ' ' + user[0]['last_name']
-                    Upsert_DB.add_user(event.obj.from_id, user_name)
-                    logging_rules.write_incoming(message_from_user,
-                                                 event.obj.from_id)
-                    MessageHandler.answer_to_user(message_from_user,
-                                                  event.obj.from_id)
+                    Upsert_DB.add_user(vk_id, user_name)
+                    logging_rules.write_incoming(message_from_user, vk_id)
+                    bot_off = check_DB.check_bot_off(vk_id)
+                    if bot_off is False:
+                        MessageHandler.answer_to_user(message_from_user, vk_id)
+                    else:
+                        Bot_status.turn_on(message_from_user, vk_id)
+            elif event.type == VkBotEventType.MESSAGE_REPLY:
+                vk_id = event.obj.peer_id
+                message_to_user = event.obj.text
+                Bot_status.turn_on(message_to_user, vk_id)
     except (KeyboardInterrupt, SystemExit):
         raise
     except requests.exceptions.ReadTimeout:

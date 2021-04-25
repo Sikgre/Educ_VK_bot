@@ -4,6 +4,7 @@ from handlers import MessageHandler
 from db_functions import Upsert_DB, check_DB, Bot_status
 import requests
 from vk_functions import VKMethods
+from settings import admin_id
 
 
 longpoll = VKMethods.Bot_longpoll()
@@ -25,9 +26,8 @@ while True:
                     else:
                         Bot_status.turn_on(message_from_user, vk_id)
             elif event.type == VkBotEventType.MESSAGE_REPLY:
-                vk_id = event.obj.peer_id
-                message_to_user = event.obj.text
-                Bot_status.turn_on(message_to_user, vk_id)
+                if event.obj.peer_id != int(admin_id):
+                    Bot_status.turn_on(event.obj.text, event.obj.peer_id)
     except (KeyboardInterrupt, SystemExit):
         raise
     except requests.exceptions.ReadTimeout:

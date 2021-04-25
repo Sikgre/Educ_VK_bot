@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, JSON, Boolean
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext import func
+from sqlalchemy.sql import func
 from db import Base, engine
 
 

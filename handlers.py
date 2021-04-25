@@ -112,10 +112,8 @@ class MessageHandler():
                 else:
                     message_to_user = steps["finish_order"]
                     Upsert_DB.finish_order(user)
-                    print("Закрыли заказ")
                     if check_DB.check_correct_order(user) is True:
                         Upsert_DB.sended_mark_on(user)
-                        print("Поставили отметку о закрытии")
                         Bot_status.turn_off(user)
                         cls.send_to_admin(user)
                         return message_to_user

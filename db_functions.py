@@ -35,12 +35,10 @@ class check_DB():
     def check_correct_order(vk_id):
         order_id = get_DB.get_last_order(vk_id)
         order = Order.query.filter(Order.id == order_id).first()
-        print("Проверка правильности заполнения заказа")
         if ((order.comments is not None) and
            (order.description is not None) and
            (order.sended is False) and
            order.status == "finished"):
-            print("True")
             return True
 
     @staticmethod
@@ -52,8 +50,8 @@ class check_DB():
 
 class get_DB():
 
-    @classmethod
-    def get_user_id(cls, vk_id):
+    @staticmethod
+    def get_user_id(vk_id):
         user = User.query.filter(User.vk_id == vk_id).first()
         return user.id
 
